@@ -40,32 +40,44 @@ public class ProductoAjustado implements Producto
     }
 
     /**
-     * Retorna el precio del producto ajustado, que debe ser igual al del producto base, sumándole el precio de los ingredientes adicionales.
+     * Retorna el precio del producto ajustado, que debe ser igual al del producto base,
+     * sumándole el precio de los ingredientes adicionales.
      */
     @Override
     public int getPrecio( )
     {
-        return 0;
+        int precio = productoBase.getPrecio( );
+
+        for( Ingrediente ing : agregados )
+        {
+            precio += ing.getCostoAdicional( );
+        }
+
+        return precio;
     }
 
     /**
      * Genera el texto que debe aparecer en la factura.
      * 
-     * El texto incluye el producto base, los ingredientes adicionales con su costo, los ingredientes eliminados, y el precio total
+     * El texto incluye el producto base, los ingredientes adicionales con su costo,
+     * los ingredientes eliminados, y el precio total
      */
     @Override
     public String generarTextoFactura( )
     {
         StringBuffer sb = new StringBuffer( );
-        sb.append( productoBase );
+
+        sb.append( productoBase.generarTextoFactura( ) );
+
         for( Ingrediente ing : agregados )
         {
             sb.append( "    +" + ing.getNombre( ) );
-            sb.append( "                " + ing.getCostoAdicional( ) );
+            sb.append( "                " + ing.getCostoAdicional( ) + "\n" );
         }
+
         for( Ingrediente ing : eliminados )
         {
-            sb.append( "    -" + ing.getNombre( ) );
+            sb.append( "    -" + ing.getNombre( ) + "\n" );
         }
 
         sb.append( "            " + getPrecio( ) + "\n" );
@@ -73,4 +85,21 @@ public class ProductoAjustado implements Producto
         return sb.toString( );
     }
 
+    /**
+     * Agrega un ingrediente al producto
+     * @param ingrediente Ingrediente que se quiere agregar
+     */
+    public void agregarIngrediente( Ingrediente ingrediente )
+    {
+        agregados.add( ingrediente );
+    }
+
+    /**
+     * Elimina un ingrediente del producto
+     * @param ingrediente Ingrediente que se quiere eliminar
+     */
+    public void eliminarIngrediente( Ingrediente ingrediente )
+    {
+        eliminados.add( ingrediente );
+    }
 }
